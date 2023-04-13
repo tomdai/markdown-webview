@@ -38,8 +38,17 @@ public struct MarkdownWebView: NSViewRepresentable {
             
             self.nsView.setValue(true, forKey: "drawsTransparentBackground")
             
-            let pageFileURL = Bundle.module.url(forResource: "page", withExtension: "html")!
-            self.nsView.loadFileURL(pageFileURL, allowingReadAccessTo: pageFileURL)
+            guard let templateFileURL = Bundle.module.url(forResource: "template", withExtension: ""),
+                  let templateString = try? String(contentsOf: templateFileURL),
+                  let scriptFileURL = Bundle.module.url(forResource: "script", withExtension: ""),
+                  let scriptString = try? String(contentsOf: scriptFileURL),
+                  let stylesheetFileURL = Bundle.module.url(forResource: "default-macOS", withExtension: ""),
+                  let stylesheetString = try? String(contentsOf: stylesheetFileURL)
+            else { return }
+            let htmlString = templateString
+                .replacingOccurrences(of: "PLACEHOLDER_SCRIPT", with: scriptString)
+                .replacingOccurrences(of: "PLACEHOLDER_STYLESHEET", with: stylesheetString)
+            self.nsView.loadHTMLString(htmlString, baseURL: nil)
         }
         
         public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

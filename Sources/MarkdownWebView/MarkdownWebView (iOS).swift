@@ -32,6 +32,12 @@ public struct MarkdownWebView: UIViewRepresentable {
             
             super.init()
             
+            #if DEBUG
+            if #available(iOS 16.4, *) {
+                self.uiView.isInspectable = true
+            }
+            #endif
+            
             self.uiView.navigationDelegate = self
             self.uiView.uiDelegate = self
             
@@ -39,8 +45,17 @@ public struct MarkdownWebView: UIViewRepresentable {
             self.uiView.setContentHuggingPriority(.required, for: .vertical)
             self.uiView.isOpaque = false
             
-            let pageFileURL = Bundle.module.url(forResource: "page", withExtension: "html")!
-            self.uiView.loadFileURL(pageFileURL, allowingReadAccessTo: pageFileURL)
+            guard let templateFileURL = Bundle.module.url(forResource: "template", withExtension: ""),
+                  let templateString = try? String(contentsOf: templateFileURL),
+                  let scriptFileURL = Bundle.module.url(forResource: "script", withExtension: ""),
+                  let scriptString = try? String(contentsOf: scriptFileURL),
+                  let stylesheetFileURL = Bundle.module.url(forResource: "default-iOS", withExtension: ""),
+                  let stylesheetString = try? String(contentsOf: stylesheetFileURL)
+            else { return }
+            let htmlString = templateString
+                .replacingOccurrences(of: "PLACEHOLDER_SCRIPT", with: scriptString)
+                .replacingOccurrences(of: "PLACEHOLDER_STYLESHEET", with: stylesheetString)
+            self.uiView.loadHTMLString(htmlString, baseURL: nil)
         }
         
         public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

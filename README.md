@@ -66,7 +66,7 @@ struct ContentView: View {
 
 ## Requirement for macOS Apps
 
-The underlying web view loads an HTML file from the bundle. For the package to work in a macOS app, enable the “Outgoing Connections (Client)” capability.
+The underlying web view loads an HTML string. For the package to work in a macOS app, enable the “Outgoing Connections (Client)” capability.
 
 <details>
 <summary>What it looks like in Xcode</summary>
