@@ -39,7 +39,7 @@ Code syntax is automatically highlighted.
 ## Supported Platforms
 
 - macOS 11 and later
-- iOS support coming soon
+- iOS 14 and later
 
 ## Installation
 
