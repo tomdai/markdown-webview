@@ -37,6 +37,7 @@ public struct MarkdownWebView: UIViewRepresentable {
             
             self.uiView.scrollView.isScrollEnabled = false
             self.uiView.setContentHuggingPriority(.required, for: .vertical)
+            self.uiView.isOpaque = false
             
             let pageFileURL = Bundle.module.url(forResource: "page", withExtension: "html")!
             self.uiView.loadFileURL(pageFileURL, allowingReadAccessTo: pageFileURL)
