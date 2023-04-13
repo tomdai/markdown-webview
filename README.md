@@ -43,7 +43,9 @@ Code syntax is automatically highlighted.
 
 ## Installation
 
-Add this package as a dependency. See the article [“Adding package dependencies to your app”](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app) to learn more.
+Add this package as a dependency. 
+
+See the article [“Adding package dependencies to your app”](https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app) to learn more.
 
 ## Usage
 
