@@ -20,20 +20,17 @@
                     } catch (__) { }
                 }
 
-                return ''; // use external default escaping
+                return ``;
             },
             linkify: true,
         });
+        
         const element = document.getElementById(`markdown-rendered`);
-        const target = { markdownContent: `` };
-        const handler = {
-            set: function (target, prop, receiver) {
-                target[prop] = receiver;
-                element.innerHTML = markdownIt.render(receiver);
-                return true;
-            }
-        };
-        window.proxy = new Proxy(target, handler);
+        
+        window.updateWithMarkdownContentBase64Encoded = (markdownContentBase64Encoded) => {
+            const markdownContent = window.atob(markdownContentBase64Encoded)
+            element.innerHTML = markdownIt.render(markdownContent);
+        }
     </script>
 </body>
 

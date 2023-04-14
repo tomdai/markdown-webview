@@ -72,7 +72,9 @@ public struct MarkdownWebView: UIViewRepresentable {
         }
         
         func updateMarkdownContent(_ markdownContent: String) {
-            self.callAsyncJavaScript("window.proxy.markdownContent = `\(markdownContent.replacingOccurrences(of: "`", with: "\\`"))`", in: nil, in: .page, completionHandler: nil)
+            guard let markdownContentBase64Encoded = markdownContent.data(using: .utf8)?.base64EncodedString() else { return }
+            
+            self.callAsyncJavaScript("window.updateWithMarkdownContentBase64Encoded(`\(markdownContentBase64Encoded)`)", in: nil, in: .page, completionHandler: nil)
             
             self.evaluateJavaScript("document.body.scrollHeight", in: nil, in: .page) { result in
                 guard let contentHeight = try? result.get() as? Double else { return }
