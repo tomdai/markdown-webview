@@ -10,9 +10,11 @@ typealias PlatformViewRepresentable = UIViewRepresentable
 @available(macOS 11.0, iOS 14.0, *)
 public struct MarkdownWebView: PlatformViewRepresentable {
     let markdownContent: String
+    let linkActivationHandler: ((URL) -> Void)?
     
-    public init(_ markdownContent: String) {
+    public init(_ markdownContent: String, onLinkActivation linkActivationHandler: ((URL) -> Void)? = nil) {
         self.markdownContent = markdownContent
+        self.linkActivationHandler = linkActivationHandler
     }
     
     public func makeCoordinator() -> Coordinator { .init(parent: self) }
@@ -86,6 +88,28 @@ public struct MarkdownWebView: PlatformViewRepresentable {
         /// Update the content on first finishing loading.
         public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             (webView as! CustomWebView).updateMarkdownContent(self.parent.markdownContent)
+        }
+        
+        public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
+            if navigationAction.navigationType == .linkActivated {
+                guard let url = navigationAction.request.url else { return .cancel }
+                
+                if let linkActivationHandler = self.parent.linkActivationHandler {
+                    linkActivationHandler(url)
+                } else {
+                    #if os(macOS)
+                    NSWorkspace.shared.open(url)
+                    #elseif os(iOS)
+                    DispatchQueue.main.async {
+                        Task { await UIApplication.shared.open(url) }
+                    }
+                    #endif
+                }
+                
+                return .cancel
+            } else {
+                return .allow
+            }
         }
     }
     
