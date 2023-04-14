@@ -36,7 +36,7 @@ public struct MarkdownWebView: PlatformViewRepresentable {
     public func updateUIView(_ uiView: CustomWebView, context: Context) { self.updatePlatformView(uiView, context: context) }
     #endif
     
-    public class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
+    public class Coordinator: NSObject, WKNavigationDelegate {
         let parent: MarkdownWebView
         let platformView: CustomWebView
         
@@ -49,7 +49,6 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             super.init()
             
             self.platformView.navigationDelegate = self
-            self.platformView.uiDelegate = self
             
             #if DEBUG && os(iOS)
             if #available(iOS 16.4, *) {
