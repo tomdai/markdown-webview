@@ -49,6 +49,8 @@ See the article [“Adding package dependencies to your app”](https://develope
 
 ## Usage
 
+### Display Markdown Content
+
 ```swift
 import SwiftUI
 import MarkdownWebView
@@ -59,6 +61,27 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             MarkdownWebView(markdownContent)
+        }
+    }
+}
+```
+
+### Handle Links
+
+The view opens links with the default browser by default. You can handle link activations yourself by setting the `onLinkActivation` parameter in the initializer.
+
+```swift
+import SwiftUI
+import MarkdownWebView
+
+struct ContentView: View {
+    @State private var markdownContent = "# Hello apple.com"
+    
+    var body: some View {
+        NavigationStack {
+            MarkdownWebView(markdownContent, onLinkActivation: { url in
+                print(url)
+            })
         }
     }
 }
