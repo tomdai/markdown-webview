@@ -71,11 +71,16 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             self.platformView.isOpaque = false
             #endif
             
+            #if os(macOS)
+            let stylesheetFileName = "default-macOS"
+            #elseif os(iOS)
+            let stylesheetFileName = "default-iOS"
+            #endif
             guard let templateFileURL = Bundle.module.url(forResource: "template", withExtension: ""),
                   let templateString = try? String(contentsOf: templateFileURL),
                   let scriptFileURL = Bundle.module.url(forResource: "script", withExtension: ""),
                   let scriptString = try? String(contentsOf: scriptFileURL),
-                  let stylesheetFileURL = Bundle.module.url(forResource: "default-macOS", withExtension: ""),
+                  let stylesheetFileURL = Bundle.module.url(forResource: stylesheetFileName, withExtension: ""),
                   let stylesheetString = try? String(contentsOf: stylesheetFileURL)
             else { return }
             let htmlString = templateString
