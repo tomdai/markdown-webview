@@ -36,16 +36,13 @@ public struct MarkdownWebView: PlatformViewRepresentable {
     public func updateUIView(_ uiView: CustomWebView, context: Context) { self.updatePlatformView(uiView, context: context) }
     #endif
     
-    public class Coordinator: NSObject, WKNavigationDelegate {
+    public class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         let parent: MarkdownWebView
         let platformView: CustomWebView
         
         init(parent: MarkdownWebView) {
             self.parent = parent
-            
-            let webViewConfiguration: WKWebViewConfiguration = .init()
-            self.platformView = .init(frame: .zero, configuration: webViewConfiguration)
-            
+            self.platformView = .init()
             super.init()
             
             self.platformView.navigationDelegate = self
@@ -70,6 +67,10 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             #elseif os(iOS)
             self.platformView.isOpaque = false
             #endif
+            
+            /// Receive messages from the web view.
+            self.platformView.configuration.userContentController = .init()
+            self.platformView.configuration.userContentController.add(self, name: "sizeChangeHandler")
             
             #if os(macOS)
             let stylesheetFileName = "default-macOS"
@@ -115,10 +116,23 @@ public struct MarkdownWebView: PlatformViewRepresentable {
                 return .allow
             }
         }
+        
+        public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+            switch message.name {
+            case "sizeChangeHandler":
+                guard let contentHeight = message.body as? CGFloat,
+                      self.platformView.contentHeight != contentHeight
+                else { return }
+                self.platformView.contentHeight = contentHeight
+                self.platformView.invalidateIntrinsicContentSize()
+            default:
+                return
+            }
+        }
     }
     
     public class CustomWebView: WKWebView {
-        var contentHeight: Double = 0
+        var contentHeight: CGFloat = 0
         
         public override var intrinsicContentSize: CGSize {
             .init(width: super.intrinsicContentSize.width, height: self.contentHeight)
@@ -148,7 +162,8 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             self.callAsyncJavaScript("window.updateWithMarkdownContentBase64Encoded(`\(markdownContentBase64Encoded)`)", in: nil, in: .page, completionHandler: nil)
             
             self.evaluateJavaScript("document.body.scrollHeight", in: nil, in: .page) { result in
-                guard let contentHeight = try? result.get() as? Double else { return }
+                guard let contentHeight = try? result.get() as? CGFloat,
+                      self.contentHeight != contentHeight else { return }
                 self.contentHeight = contentHeight
                 self.invalidateIntrinsicContentSize()
             }
