@@ -101,8 +101,14 @@ The underlying web view loads an HTML string. For the package to work in a macOS
 Portions of this package may utilize the following copyrighted material, the use of which is hereby acknowledged.
 
 - [markdown-it](https://github.com/markdown-it/markdown-it)\
-    Copyright (c) 2014 Vitaly Puzrin, Alex Kocharin.
+    © 2014 Vitaly Puzrin, Alex Kocharin
+- [Punycode.js](https://github.com/mathiasbynens/punycode.js)\
+    © Mathias Bynens
 - [highlight.js](https://github.com/highlightjs/highlight.js)\
-    Copyright (c) 2006, Ivan Sagalaev.
+    © 2006 Ivan Sagalaev
+- [markdown-it-mark](https://github.com/markdown-it/markdown-it-mark)\
+    © 2014-2015 Vitaly Puzrin, Alex Kocharin
+- [markdown-it-task-lists](https://github.com/revin/markdown-it-task-lists)\
+    © 2016, Revin Guillen
 - [github-markdown-css](https://github.com/sindresorhus/github-markdown-css)\
-    Copyright (c) Sindre Sorhus
+    © Sindre Sorhus

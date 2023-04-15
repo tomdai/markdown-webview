@@ -27,7 +27,9 @@
                 return ``;
             },
             linkify: true,
-        });
+        })
+        .use(window.markdownitMark)
+        .use(window.markdownitTaskLists);
         
         const element = document.getElementById(`markdown-rendered`);
         
