@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
     <script>PLACEHOLDER_SCRIPT</script>
     <style>PLACEHOLDER_STYLESHEET</style>
 </head>
@@ -31,16 +30,15 @@
         .use(window.markdownitMark)
         .use(window.markdownitTaskLists);
         
-        const element = document.getElementById(`markdown-rendered`);
+        const markdownRenderedElement = document.getElementById(`markdown-rendered`);
         
         window.updateWithMarkdownContentBase64Encoded = (markdownContentBase64Encoded) => {
             const markdownContent = decodeURIComponent(atob(markdownContentBase64Encoded).split(``).map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(``));
-            element.innerHTML = markdownIt.render(markdownContent);
+            markdownRenderedElement.innerHTML = markdownIt.render(markdownContent);
         }
         
-        document.body.onresize = () => {
-            window.webkit.messageHandlers.sizeChangeHandler.postMessage(document.body.scrollHeight)
-        }
+        const resizeObserver = new ResizeObserver((entries) => { window.webkit.messageHandlers.sizeChangeHandler.postMessage(entries[0].borderBoxSize[0].blockSize) });
+        resizeObserver.observe(markdownRenderedElement);
     </script>
 </body>
 
