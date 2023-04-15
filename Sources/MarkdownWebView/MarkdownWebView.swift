@@ -127,8 +127,11 @@ public struct MarkdownWebView: PlatformViewRepresentable {
         /// Disables scrolling.
         #if os(macOS)
         public override func scrollWheel(with event: NSEvent) {
-            self.nextResponder?.scrollWheel(with: event)
-            return
+            if event.deltaY == 0 {
+                super.scrollWheel(with: event)
+            } else {
+                self.nextResponder?.scrollWheel(with: event)
+            }
         }
         #endif
         
