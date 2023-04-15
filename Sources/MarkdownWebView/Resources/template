@@ -18,6 +18,10 @@
                     try {
                         return hljs.highlight(str, { language: lang }).value;
                     } catch (__) { }
+                } else {
+                    try {
+                        return hljs.highlightAuto(str).value;
+                    } catch (__) { }
                 }
 
                 return ``;
