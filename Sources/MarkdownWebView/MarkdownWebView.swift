@@ -10,15 +10,19 @@ typealias PlatformViewRepresentable = UIViewRepresentable
 @available(macOS 11.0, iOS 14.0, *)
 public struct MarkdownWebView: PlatformViewRepresentable {
     let markdownContent: String
-    let linkActivationHandler: ((URL) -> Void)?
     let customStylesheet: String?
+    let linkActivationHandler: ((URL) -> Void)?
     
-    public init(_ markdownContent: String,
-                onLinkActivation linkActivationHandler: ((URL) -> Void)? = nil,
-                customStylesheet: String? = nil) {
+    public init(_ markdownContent: String, customStylesheet: String? = nil) {
         self.markdownContent = markdownContent
-        self.linkActivationHandler = linkActivationHandler
         self.customStylesheet = customStylesheet
+        self.linkActivationHandler = nil
+    }
+    
+    internal init(_ markdownContent: String, customStylesheet: String? = nil, linkActivationHandler: @escaping ((URL) -> Void)) {
+        self.markdownContent = markdownContent
+        self.customStylesheet = customStylesheet
+        self.linkActivationHandler = linkActivationHandler
     }
     
     public func makeCoordinator() -> Coordinator { .init(parent: self) }
@@ -39,6 +43,10 @@ public struct MarkdownWebView: PlatformViewRepresentable {
     #elseif os(iOS)
     public func updateUIView(_ uiView: CustomWebView, context: Context) { self.updatePlatformView(uiView, context: context) }
     #endif
+    
+    public func onLinkActivation(_ linkAvtivationHandler: @escaping (URL) -> Void) -> Self {
+        return .init(self.markdownContent, customStylesheet: self.customStylesheet, linkActivationHandler: linkAvtivationHandler)
+    }
     
     public class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         let parent: MarkdownWebView

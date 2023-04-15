@@ -104,9 +104,10 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            MarkdownWebView(markdownContent, onLinkActivation: { url in
-                print(url)
-            })
+            MarkdownWebView(markdownContent)
+                .onLinkActivation { url in
+                    print(url)        
+                }
         }
     }
 }
