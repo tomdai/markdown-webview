@@ -66,9 +66,34 @@ struct ContentView: View {
 }
 ```
 
+### Customize Style
+
+The view comes with a default style ([CSS files](https://github.com/tomdai/markdown-webview/tree/main/Sources/MarkdownWebView/Resources/stylesheets)) that suits many use cases.
+
+You can also supply your own stylesheet by setting the `customStylesheet` parameter in the initializer.
+
+```swift
+import SwiftUI
+import MarkdownWebView
+
+struct ContentView: View {
+    @State private var markdownContent = "# Hello World"
+    private let stylesheet: String? = try? .init(contentsOf: Bundle.main.url(forResource: "markdown", withExtension: "css")!)
+    
+    var body: some View {
+        NavigationStack {
+            MarkdownWebView(markdownContent, customStylesheet: stylesheet)
+        }
+    }
+}
+```
+
+
 ### Handle Links
 
-The view opens links with the default browser by default. You can handle link activations yourself by setting the `onLinkActivation` parameter in the initializer.
+The view opens links with the default browser by default.
+
+You can handle link activations yourself by setting the `onLinkActivation` parameter in the initializer.
 
 ```swift
 import SwiftUI

@@ -11,10 +11,14 @@ typealias PlatformViewRepresentable = UIViewRepresentable
 public struct MarkdownWebView: PlatformViewRepresentable {
     let markdownContent: String
     let linkActivationHandler: ((URL) -> Void)?
+    let customStylesheet: String?
     
-    public init(_ markdownContent: String, onLinkActivation linkActivationHandler: ((URL) -> Void)? = nil) {
+    public init(_ markdownContent: String,
+                onLinkActivation linkActivationHandler: ((URL) -> Void)? = nil,
+                customStylesheet: String? = nil) {
         self.markdownContent = markdownContent
         self.linkActivationHandler = linkActivationHandler
+        self.customStylesheet = customStylesheet
     }
     
     public func makeCoordinator() -> Coordinator { .init(parent: self) }
@@ -73,20 +77,20 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             self.platformView.configuration.userContentController.add(self, name: "sizeChangeHandler")
             
             #if os(macOS)
-            let stylesheetFileName = "default-macOS"
+            let defaultStylesheetFileName = "default-macOS"
             #elseif os(iOS)
-            let stylesheetFileName = "default-iOS"
+            let defaultStylesheetFileName = "default-iOS"
             #endif
             guard let templateFileURL = Bundle.module.url(forResource: "template", withExtension: ""),
                   let templateString = try? String(contentsOf: templateFileURL),
                   let scriptFileURL = Bundle.module.url(forResource: "script", withExtension: ""),
-                  let scriptString = try? String(contentsOf: scriptFileURL),
-                  let stylesheetFileURL = Bundle.module.url(forResource: stylesheetFileName, withExtension: ""),
-                  let stylesheetString = try? String(contentsOf: stylesheetFileURL)
+                  let script = try? String(contentsOf: scriptFileURL),
+                  let defaultStylesheetFileURL = Bundle.module.url(forResource: defaultStylesheetFileName, withExtension: ""),
+                  let defaultStylesheet = try? String(contentsOf: defaultStylesheetFileURL)
             else { return }
             let htmlString = templateString
-                .replacingOccurrences(of: "PLACEHOLDER_SCRIPT", with: scriptString)
-                .replacingOccurrences(of: "PLACEHOLDER_STYLESHEET", with: stylesheetString)
+                .replacingOccurrences(of: "PLACEHOLDER_SCRIPT", with: script)
+                .replacingOccurrences(of: "PLACEHOLDER_STYLESHEET", with: self.parent.customStylesheet ?? defaultStylesheet)
             self.platformView.loadHTMLString(htmlString, baseURL: nil)
         }
         
