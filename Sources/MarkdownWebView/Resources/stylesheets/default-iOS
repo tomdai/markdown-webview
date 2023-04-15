@@ -1,17 +1,3 @@
-:root {
-    color-scheme: light dark;
-}
-
-html,
-body {
-    overscroll-behavior: none;
-    margin: 0;
-}
-
-body::-webkit-scrollbar {
-    display: none;
-}
-
 #markdown-rendered {
     color: -apple-system-label;
     font-family: system-ui;
@@ -296,14 +282,6 @@ body::-webkit-scrollbar {
     display: table;
     clear: both;
     content: "";
-}
-
-#markdown-rendered>*:first-child {
-    margin-top: 0 !important;
-}
-
-#markdown-rendered>*:last-child {
-    margin-bottom: 0 !important;
 }
 
 #markdown-rendered a:not([href]) {

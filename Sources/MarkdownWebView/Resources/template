@@ -5,7 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script>PLACEHOLDER_SCRIPT</script>
-    <style>PLACEHOLDER_STYLESHEET</style>
+    <style>
+        PLACEHOLDER_STYLESHEET
+    </style>
+    <style>
+        :root {
+            color-scheme: light dark !important;
+        }
+
+        html,
+        body {
+            overscroll-behavior: none !important;
+            margin: 0 !important;
+        }
+
+        body::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        #markdown-rendered>*:first-child {
+            margin-top: 0 !important;
+        }
+
+        #markdown-rendered>*:last-child {
+            margin-bottom: 0 !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -29,14 +54,14 @@
         })
         .use(window.markdownitMark)
         .use(window.markdownitTaskLists);
-        
+
         const markdownRenderedElement = document.getElementById(`markdown-rendered`);
-        
+
         window.updateWithMarkdownContentBase64Encoded = (markdownContentBase64Encoded) => {
-            const markdownContent = decodeURIComponent(atob(markdownContentBase64Encoded).split(``).map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(``));
+            const markdownContent = decodeURIComponent(atob(markdownContentBase64Encoded).split(``).map(function (c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(``));
             markdownRenderedElement.innerHTML = markdownIt.render(markdownContent);
         }
-        
+
         const resizeObserver = new ResizeObserver((entries) => { window.webkit.messageHandlers.sizeChangeHandler.postMessage(entries[0].borderBoxSize[0].blockSize) });
         resizeObserver.observe(markdownRenderedElement);
     </script>
