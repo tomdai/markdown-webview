@@ -12,17 +12,20 @@ public struct MarkdownWebView: PlatformViewRepresentable {
     let markdownContent: String
     let customStylesheet: String?
     let linkActivationHandler: ((URL) -> Void)?
+    let renderedContentHandler: ((String) -> Void)?
     
     public init(_ markdownContent: String, customStylesheet: String? = nil) {
         self.markdownContent = markdownContent
         self.customStylesheet = customStylesheet
         self.linkActivationHandler = nil
+        self.renderedContentHandler = nil
     }
     
-    internal init(_ markdownContent: String, customStylesheet: String? = nil, linkActivationHandler: @escaping ((URL) -> Void)) {
+    internal init(_ markdownContent: String, customStylesheet: String?, linkActivationHandler: ((URL) -> Void)?, renderedContentHandler: ((String) -> Void)?) {
         self.markdownContent = markdownContent
         self.customStylesheet = customStylesheet
         self.linkActivationHandler = linkActivationHandler
+        self.renderedContentHandler = renderedContentHandler
     }
     
     public func makeCoordinator() -> Coordinator { .init(parent: self) }
@@ -45,7 +48,11 @@ public struct MarkdownWebView: PlatformViewRepresentable {
     #endif
     
     public func onLinkActivation(_ linkActivationHandler: @escaping (URL) -> Void) -> Self {
-        return .init(self.markdownContent, customStylesheet: self.customStylesheet, linkActivationHandler: linkActivationHandler)
+        .init(self.markdownContent, customStylesheet: self.customStylesheet, linkActivationHandler: linkActivationHandler, renderedContentHandler: self.renderedContentHandler)
+    }
+    
+    public func onRendered(_ renderedContentHandler: @escaping (String) -> Void) -> Self {
+        .init(self.markdownContent, customStylesheet: self.customStylesheet, linkActivationHandler: self.linkActivationHandler, renderedContentHandler: renderedContentHandler)
     }
     
     public class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
@@ -83,7 +90,7 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             /// Receive messages from the web view.
             self.platformView.configuration.userContentController = .init()
             self.platformView.configuration.userContentController.add(self, name: "sizeChangeHandler")
-            self.platformView.configuration.userContentController.add(self, name: "renderResultHandler")
+            self.platformView.configuration.userContentController.add(self, name: "renderedContentHandler")
             
             #if os(macOS)
             let defaultStylesheetFileName = "default-macOS"
@@ -138,12 +145,13 @@ public struct MarkdownWebView: PlatformViewRepresentable {
                 else { return }
                 self.platformView.contentHeight = contentHeight
                 self.platformView.invalidateIntrinsicContentSize()
-            case "renderResultHandler":
-                guard let renderedMarkdownContentBase64Encoded = message.body as? String,
-                      let renderedMarkdownContentBase64EncodedData: Data = .init(base64Encoded: renderedMarkdownContentBase64Encoded),
-                      let renderedMarkdownContent = String(data: renderedMarkdownContentBase64EncodedData, encoding: .utf8)
+            case "renderedContentHandler":
+                guard let renderedContentHandler = self.parent.renderedContentHandler,
+                      let renderedContentBase64Encoded = message.body as? String,
+                      let renderedContentBase64EncodedData: Data = .init(base64Encoded: renderedContentBase64Encoded),
+                      let renderedContent = String(data: renderedContentBase64EncodedData, encoding: .utf8)
                 else { return }
-            
+                renderedContentHandler(renderedContent)
             default:
                 return
             }
