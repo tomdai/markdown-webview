@@ -44,8 +44,8 @@ public struct MarkdownWebView: PlatformViewRepresentable {
     public func updateUIView(_ uiView: CustomWebView, context: Context) { self.updatePlatformView(uiView, context: context) }
     #endif
     
-    public func onLinkActivation(_ linkAvtivationHandler: @escaping (URL) -> Void) -> Self {
-        return .init(self.markdownContent, customStylesheet: self.customStylesheet, linkActivationHandler: linkAvtivationHandler)
+    public func onLinkActivation(_ linkActivationHandler: @escaping (URL) -> Void) -> Self {
+        return .init(self.markdownContent, customStylesheet: self.customStylesheet, linkActivationHandler: linkActivationHandler)
     }
     
     public class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
@@ -83,6 +83,7 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             /// Receive messages from the web view.
             self.platformView.configuration.userContentController = .init()
             self.platformView.configuration.userContentController.add(self, name: "sizeChangeHandler")
+            self.platformView.configuration.userContentController.add(self, name: "renderResultHandler")
             
             #if os(macOS)
             let defaultStylesheetFileName = "default-macOS"
@@ -137,6 +138,12 @@ public struct MarkdownWebView: PlatformViewRepresentable {
                 else { return }
                 self.platformView.contentHeight = contentHeight
                 self.platformView.invalidateIntrinsicContentSize()
+            case "renderResultHandler":
+                guard let renderedMarkdownContentBase64Encoded = message.body as? String,
+                      let renderedMarkdownContentBase64EncodedData: Data = .init(base64Encoded: renderedMarkdownContentBase64Encoded),
+                      let renderedMarkdownContent = String(data: renderedMarkdownContentBase64EncodedData, encoding: .utf8)
+                else { return }
+            
             default:
                 return
             }
