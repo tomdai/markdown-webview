@@ -82,7 +82,12 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             
             /// Set transparent background.
             #if os(macOS)
-            self.platformView.setValue(true, forKey: "drawsTransparentBackground")
+            if NSAppKitVersion.current.rawValue > 1500 {
+                self.platformView.setValue(false, forKey: "drawsBackground")
+            }
+            else {
+                self.platformView.setValue(true, forKey: "drawsTransparentBackground")
+            }
             #elseif os(iOS)
             self.platformView.isOpaque = false
             #endif
