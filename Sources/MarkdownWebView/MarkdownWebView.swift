@@ -39,6 +39,7 @@ public struct MarkdownWebView: PlatformViewRepresentable {
     func updatePlatformView(_ platformView: CustomWebView, context: Context) {
         guard !platformView.isLoading else { return } /// This function might be called when the page is still loading, at which time `window.proxy` is not available yet.
         platformView.updateMarkdownContent(self.markdownContent)
+//        platformView.addCopyButtons()
     }
     
     #if os(macOS)
@@ -189,5 +190,24 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             
             self.callAsyncJavaScript("window.updateWithMarkdownContentBase64Encoded(`\(markdownContentBase64Encoded)`)", in: nil, in: .page, completionHandler: nil)
         }
+        
+//        func addCopyButtons() {
+//            let jsFunction = """
+//            function addCopyButtons() {
+//                const codeBlocks = document.querySelectorAll('pre');
+//                codeBlocks.forEach((codeBlock) => {
+//                    const button = document.createElement('button');
+//                    button.textContent = 'Copy Code';
+//                    button.addEventListener('click', async () => {
+//                       await navigator.clipboard.writeText(codeBlock.textContent);
+//                       button.textContent = 'Copied!';
+//                       setTimeout(() => { button.textContent = 'Copy Code'; }, 2000);
+//                    });
+//                    codeBlock.parentNode.insertBefore(button, codeBlock.nextSibling);
+//                });
+//            }
+//            """
+//            evaluateJavaScript(jsFunction, completionHandler: nil)
+//        }
     }
 }
