@@ -39,7 +39,6 @@ public struct MarkdownWebView: PlatformViewRepresentable {
     func updatePlatformView(_ platformView: CustomWebView, context: Context) {
         guard !platformView.isLoading else { return } /// This function might be called when the page is still loading, at which time `window.proxy` is not available yet.
         platformView.updateMarkdownContent(self.markdownContent)
-//        platformView.addCopyButtons()
     }
     
     #if os(macOS)
@@ -93,6 +92,7 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             self.platformView.configuration.userContentController = .init()
             self.platformView.configuration.userContentController.add(self, name: "sizeChangeHandler")
             self.platformView.configuration.userContentController.add(self, name: "renderedContentHandler")
+            self.platformView.configuration.userContentController.add(self, name: "copyToPasteboard")
             
             #if os(macOS)
             let defaultStylesheetFileName = "default-macOS"
@@ -154,6 +154,9 @@ public struct MarkdownWebView: PlatformViewRepresentable {
                       let renderedContent = String(data: renderedContentBase64EncodedData, encoding: .utf8)
                 else { return }
                 renderedContentHandler(renderedContent)
+            case "copyToPasteboard":
+                guard let base64EncodedString = message.body as? String else { return }
+                base64EncodedString.copyToPasteboard()
             default:
                 return
             }
@@ -190,24 +193,16 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             
             self.callAsyncJavaScript("window.updateWithMarkdownContentBase64Encoded(`\(markdownContentBase64Encoded)`)", in: nil, in: .page, completionHandler: nil)
         }
-        
-//        func addCopyButtons() {
-//            let jsFunction = """
-//            function addCopyButtons() {
-//                const codeBlocks = document.querySelectorAll('pre');
-//                codeBlocks.forEach((codeBlock) => {
-//                    const button = document.createElement('button');
-//                    button.textContent = 'Copy Code';
-//                    button.addEventListener('click', async () => {
-//                       await navigator.clipboard.writeText(codeBlock.textContent);
-//                       button.textContent = 'Copied!';
-//                       setTimeout(() => { button.textContent = 'Copy Code'; }, 2000);
-//                    });
-//                    codeBlock.parentNode.insertBefore(button, codeBlock.nextSibling);
-//                });
-//            }
-//            """
-//            evaluateJavaScript(jsFunction, completionHandler: nil)
-//        }
+    }
+}
+
+extension String {
+    func copyToPasteboard() {
+#if os(iOS)
+        UIPasteboard.general.string = self
+#else
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(self, forType: .string)
+#endif
     }
 }
