@@ -71,7 +71,7 @@
                button.textContent = 'Copy Code';
                button.addEventListener('click', async () => {
                   window.webkit.messageHandlers.copyToPasteboard.postMessage(codeBlock.innerText);
-                  button.textContent = 'Copied!';
+                  button.textContent = 'Copied';
                   setTimeout(() => { button.textContent = 'Copy Code'; }, 2000);
                   console.log(codeBlock.textContent)
                });

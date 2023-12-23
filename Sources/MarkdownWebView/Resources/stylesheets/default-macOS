@@ -541,21 +541,20 @@
 
 #markdown-rendered pre {
     margin-top: 0px;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
-
 
 button {
  background-color: -apple-system-background;
  color: -apple-system-foreground;
- padding: 0.25em 0.5em;
+ padding: 0.26em 0.45em;
  text-align: center;
  text-decoration: none;
  display: inline-block;
- font-size: 1em;
- margin: 0.25em 0.5em;
+ font-size: 12px;
+ margin: 0.25em 0.2em;
  cursor: pointer;
- border-radius: 1em;
+ border-radius: 0.7em;
  border: none;
  margin-bottom: 1em;
 }
