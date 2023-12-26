@@ -156,7 +156,7 @@ public struct MarkdownWebView: PlatformViewRepresentable {
                 renderedContentHandler(renderedContent)
             case "copyToPasteboard":
                 guard let base64EncodedString = message.body as? String else { return }
-                base64EncodedString.copyToPasteboard()
+                base64EncodedString.trimmingCharacters(in: .whitespacesAndNewlines).copyToPasteboard()
             default:
                 return
             }
