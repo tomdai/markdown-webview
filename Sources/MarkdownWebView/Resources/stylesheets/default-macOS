@@ -547,16 +547,14 @@
 button {
  background-color: -apple-system-background;
  color: -apple-system-foreground;
- padding: 0.26em 0.45em;
+ padding: 0.35em 0.5em;
  text-align: center;
- text-decoration: none;
- display: inline-block;
  font-size: 12px;
  margin: 0.25em 0.2em;
- cursor: pointer;
  border-radius: 0.7em;
- border: none;
+border: thin solid -apple-system-separator;
  margin-bottom: 1em;
+ -webkit-user-select: none;
 }
 
 

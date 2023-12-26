@@ -73,7 +73,6 @@
                   window.webkit.messageHandlers.copyToPasteboard.postMessage(codeBlock.innerText);
                   button.textContent = 'Copied';
                   setTimeout(() => { button.textContent = 'Copy Code'; }, 2000);
-                  console.log(codeBlock.textContent)
                });
                codeBlock.parentNode.insertBefore(button, codeBlock.nextSibling);
            });
