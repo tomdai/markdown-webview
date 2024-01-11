@@ -556,7 +556,7 @@ button {
  font-size: 12px;
  margin: 0.25em 0.2em;
  border-radius: 0.7em;
-border: thin solid -apple-system-separator;
+ border: thin solid -apple-system-separator;
  margin-bottom: 1em;
  -webkit-user-select: none;
 }
@@ -570,16 +570,17 @@ border: thin solid -apple-system-separator;
     position: absolute;
     bottom: 10px;
     right: 10px;
-    padding: 3px 6px;
+    padding: 3px 5px;
     background-color: -apple-system-background;
     border: none;
     cursor: pointer;
-    /* border-radius: 5px; */
+    border-radius: 5px;
     font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 #markdown-rendered .copy-code-button:hover {
-    /* background-color: rgba(255, 255, 255, 0.9); */
+    color: rgba(255, 255, 255, 0.9);
 }
 
 #markdown-rendered .copy-code-button i {

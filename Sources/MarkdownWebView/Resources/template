@@ -70,11 +70,11 @@
             codeBlocks.forEach((codeBlock) => {
                 const button = document.createElement('button');
                 button.className = 'copy-code-button';
-                button.innerHTML = '<i class="far fa-copy"></i>'; // Font Awesome copy icon
+                button.innerHTML = '<i class="fa-regular fa-clone"></i>'; // Font Awesome copy icon
                 button.addEventListener('click', async () => {
                     window.webkit.messageHandlers.copyToPasteboard.postMessage(codeBlock.innerText);
-                    button.innerHTML = '<i class="fas fa-check"></i>'; // Font Awesome check icon
-                    setTimeout(() => { button.innerHTML = '<i class="far fa-copy"></i>'; }, 2000);
+                    button.innerHTML = '<i class="fa-solid fa-check"></i>'; // Font Awesome check icon
+                    setTimeout(() => { button.innerHTML = '<i class="fa-regular fa-clone"></i>'; }, 2000);
                     console.log(codeBlock.textContent);
                 });
                 const wrapper = document.createElement('div');
