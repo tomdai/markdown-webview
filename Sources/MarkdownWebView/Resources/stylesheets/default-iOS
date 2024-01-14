@@ -540,6 +540,26 @@
     clip: auto;
 }
 
+#markdown-rendered .code-block-wrapper {
+    position: relative;
+}
+
+#markdown-rendered .copy-code-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 3px 5px;
+    background-color: -apple-system-background;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+#markdown-rendered .copy-code-button:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
 
 
 
