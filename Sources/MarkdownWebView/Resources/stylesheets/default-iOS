@@ -1,7 +1,7 @@
 #markdown-rendered {
     color: -apple-system-label;
     font-family: system-ui;
-    font-size: 12pt;
+    font-size: 13pt;
     line-height: 1.5;
     word-wrap: break-word;
 }
