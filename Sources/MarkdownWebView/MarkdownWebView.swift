@@ -7,6 +7,7 @@ typealias PlatformViewRepresentable = NSViewRepresentable
 typealias PlatformViewRepresentable = UIViewRepresentable
 #endif
 
+#if !os(visionOS)
 @available(macOS 11.0, iOS 14.0, *)
 public struct MarkdownWebView: PlatformViewRepresentable {
     let markdownContent: String
@@ -191,14 +192,15 @@ public struct MarkdownWebView: PlatformViewRepresentable {
         }
     }
 }
+#endif
 
 extension String {
     func copyToPasteboard() {
-#if os(iOS)
-        UIPasteboard.general.string = self
-#else
+#if os(macOS)
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(self, forType: .string)
+#else
+        UIPasteboard.general.string = self
 #endif
     }
 }
