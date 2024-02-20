@@ -572,15 +572,11 @@ button {
     right: 10px;
     padding: 3px 5px;
     background-color: -apple-system-background;
+    color: -apple-system-foreground;
     border: none;
     cursor: pointer;
     border-radius: 5px;
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.7);
-}
-
-#markdown-rendered .copy-code-button:hover {
-    color: rgba(255, 255, 255, 0.9);
 }
 
 #markdown-rendered .copy-code-button i {
