@@ -7,6 +7,7 @@ typealias PlatformViewRepresentable = NSViewRepresentable
 typealias PlatformViewRepresentable = UIViewRepresentable
 #endif
 
+#if !os(visionOS)
 @available(macOS 11.0, iOS 14.0, *)
 public struct MarkdownWebView: PlatformViewRepresentable {
     let markdownContent: String
@@ -92,6 +93,7 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             self.platformView.configuration.userContentController = .init()
             self.platformView.configuration.userContentController.add(self, name: "sizeChangeHandler")
             self.platformView.configuration.userContentController.add(self, name: "renderedContentHandler")
+            self.platformView.configuration.userContentController.add(self, name: "copyToPasteboard")
             
             #if os(macOS)
             let defaultStylesheetFileName = "default-macOS"
@@ -153,6 +155,9 @@ public struct MarkdownWebView: PlatformViewRepresentable {
                       let renderedContent = String(data: renderedContentBase64EncodedData, encoding: .utf8)
                 else { return }
                 renderedContentHandler(renderedContent)
+            case "copyToPasteboard":
+                guard let base64EncodedString = message.body as? String else { return }
+                base64EncodedString.trimmingCharacters(in: .whitespacesAndNewlines).copyToPasteboard()
             default:
                 return
             }
@@ -185,5 +190,17 @@ public struct MarkdownWebView: PlatformViewRepresentable {
             
             self.callAsyncJavaScript("window.updateWithMarkdownContentBase64Encoded(`\(markdownContentBase64Encoded)`)", in: nil, in: .page, completionHandler: nil)
         }
+    }
+}
+#endif
+
+extension String {
+    func copyToPasteboard() {
+#if os(macOS)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(self, forType: .string)
+#else
+        UIPasteboard.general.string = self
+#endif
     }
 }

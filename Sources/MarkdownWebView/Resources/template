@@ -31,6 +31,7 @@
             margin-bottom: 0 !important;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 
 <body>
@@ -60,8 +61,30 @@
         window.updateWithMarkdownContentBase64Encoded = (markdownContentBase64Encoded) => {
             const markdownContent = decodeURIComponent(atob(markdownContentBase64Encoded).split(``).map(function (c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(``));
             markdownRenderedElement.innerHTML = markdownIt.render(markdownContent);
+            addCopyButtons()
             window.webkit.messageHandlers.renderedContentHandler.postMessage(markdownContentBase64Encoded);
         }
+        
+        function addCopyButtons() {
+            const codeBlocks = document.querySelectorAll('pre');
+            codeBlocks.forEach((codeBlock) => {
+                const button = document.createElement('button');
+                button.className = 'copy-code-button';
+                button.innerHTML = '<i class="fa-regular fa-clone"></i>'; // Font Awesome copy icon
+                button.addEventListener('click', async () => {
+                    window.webkit.messageHandlers.copyToPasteboard.postMessage(codeBlock.innerText);
+                    button.innerHTML = '<i class="fa-solid fa-check"></i>'; // Font Awesome check icon
+                    setTimeout(() => { button.innerHTML = '<i class="fa-regular fa-clone"></i>'; }, 2000);
+                    console.log(codeBlock.textContent);
+                });
+                const wrapper = document.createElement('div');
+                wrapper.className = 'code-block-wrapper';
+                codeBlock.parentNode.insertBefore(wrapper, codeBlock);
+                wrapper.appendChild(codeBlock);
+                wrapper.appendChild(button);
+            });
+        }
+
 
         const resizeObserver = new ResizeObserver((entries) => { window.webkit.messageHandlers.sizeChangeHandler.postMessage(entries[0].borderBoxSize[0].blockSize) });
         resizeObserver.observe(markdownRenderedElement);

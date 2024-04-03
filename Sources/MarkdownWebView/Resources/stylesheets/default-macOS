@@ -298,7 +298,7 @@
 #markdown-rendered pre,
 #markdown-rendered details {
     margin-top: 0;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
 #markdown-rendered blockquote>:first-child {
@@ -538,6 +538,49 @@
     height: 24px;
     overflow: visible;
     clip: auto;
+}
+
+/*
+#markdown-rendered pre {
+    margin-top: 0px;
+    margin-bottom: 3px;
+}
+*/
+
+/*
+button {
+ background-color: -apple-system-background;
+ color: -apple-system-foreground;
+ padding: 0.35em 0.5em;
+ text-align: center;
+ font-size: 12px;
+ margin: 0.25em 0.2em;
+ border-radius: 0.7em;
+ border: thin solid -apple-system-separator;
+ margin-bottom: 1em;
+ -webkit-user-select: none;
+}
+*/
+
+#markdown-rendered .code-block-wrapper {
+    position: relative;
+}
+
+#markdown-rendered .copy-code-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 3px 5px;
+    background-color: -apple-system-background;
+    color: -apple-system-foreground;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#markdown-rendered .copy-code-button i {
+    pointer-events: none; /* Prevents the icon from blocking click events */
 }
 
 
