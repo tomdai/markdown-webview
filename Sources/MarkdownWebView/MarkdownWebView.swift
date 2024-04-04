@@ -106,7 +106,10 @@ import WebKit
                       let script = try? String(contentsOf: scriptFileURL),
                       let defaultStylesheetFileURL = Bundle.module.url(forResource: defaultStylesheetFileName, withExtension: ""),
                       let defaultStylesheet = try? String(contentsOf: defaultStylesheetFileURL)
-                else { return }
+                else {
+                    print("Failed to load resources.")
+                    return
+                }
                 let htmlString = templateString
                     .replacingOccurrences(of: "PLACEHOLDER_SCRIPT", with: script)
                     .replacingOccurrences(of: "PLACEHOLDER_STYLESHEET", with: self.parent.customStylesheet ?? defaultStylesheet)
@@ -174,12 +177,8 @@ import WebKit
             /// Disables scrolling.
             #if os(macOS)
                 override public func scrollWheel(with event: NSEvent) {
-                    if abs(event.deltaX) >= 1 {
-                        super.scrollWheel(with: event)
-                        nextResponder?.scrollWheel(with: event)
-                    } else {
-                        nextResponder?.scrollWheel(with: event)
-                    }
+                    super.scrollWheel(with: event)
+                    nextResponder?.scrollWheel(with: event)
                 }
             #endif
 
@@ -195,6 +194,36 @@ import WebKit
 
                 callAsyncJavaScript("window.updateWithMarkdownContentBase64Encoded(`\(markdownContentBase64Encoded)`)", in: nil, in: .page, completionHandler: nil)
             }
+
+            #if os(macOS)
+                override public func keyDown(with event: NSEvent) {
+                    nextResponder?.keyDown(with: event)
+                }
+
+                override public func keyUp(with event: NSEvent) {
+                    nextResponder?.keyUp(with: event)
+                }
+
+                override public func flagsChanged(with event: NSEvent) {
+                    nextResponder?.flagsChanged(with: event)
+                }
+
+            #elseif os(iOS)
+                override public func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+                    super.pressesBegan(presses, with: event)
+                    next?.pressesBegan(presses, with: event)
+                }
+
+                override public func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+                    super.pressesEnded(presses, with: event)
+                    next?.pressesEnded(presses, with: event)
+                }
+
+                override public func pressesChanged(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+                    super.pressesChanged(presses, with: event)
+                    next?.pressesChanged(presses, with: event)
+                }
+            #endif
         }
     }
 #endif

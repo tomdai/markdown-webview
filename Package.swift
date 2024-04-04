@@ -11,7 +11,8 @@ let package = Package(
     products: [
         .library(
             name: "MarkdownWebView",
-            targets: ["MarkdownWebView"]),
+            targets: ["MarkdownWebView"]
+        ),
     ],
     targets: [
         .target(
@@ -19,7 +20,7 @@ let package = Package(
             resources: [.copy("Resources/template"),
                         .copy("Resources/script"),
                         .copy("Resources/stylesheets/default-macOS"),
-                        .copy("Resources/stylesheets/default-iOS"),
-            ]),
+                        .copy("Resources/stylesheets/default-iOS")]
+        ),
     ]
 )
